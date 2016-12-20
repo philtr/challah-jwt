@@ -47,6 +47,34 @@ GET /
 Authorization: Bearer adi8e98uie.saxbbbgudinocgeigc84y9834.8ui9odeion
 ```
 
+### Tokenizer
+
+Challah-JWT adds a few methods to your User model that make it easy to tokenize and look up users:
+
+```ruby
+user = User.first
+# => #<User id=1...>
+
+# Convert the user to a JWT
+jwt = user.to_jwt
+
+# Look up user by JWT
+user = User.find_by_jwt(jwt)
+```
+
+The tokenizer only includes the user's ID in the payload by deafult, to override this behavior, override the `jwt_attrs` method in your user model:
+
+```ruby
+class User < ApplicationRecord
+  include Challah::Jwt::Tokenizer
+  
+  def jwt_attrs
+    # make sure you include id, otherwise the lookup will fail
+    serializable_hash.slice("id", "email", "status")
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can

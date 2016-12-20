@@ -8,8 +8,14 @@ module Challah
       class_methods do
         def find_by_jwt(token)
           payload = ::JWT.decode(token, Challah::Jwt.secret_key)
-          model_id = payload.dig(0, jwt_root, "id")
-          find(model_id)
+          id = payload.dig(0, jwt_root, "id")
+
+          if Challah::Jwt.configuration.use_api_key
+            api_key = payload.dig(0, jwt_root, "api_key")
+            find_by(id: id, api_key: api_key)
+          else
+            find_by(id: id)
+          end
         rescue JWT::DecodeError
           nil
         end
@@ -24,7 +30,11 @@ module Challah
       end
 
       def jwt_attrs
-        serializable_hash.slice("id")
+        if Challah::Jwt.configuration.use_api_key
+          serializable_hash.slice("id", "api_key")
+        else
+          serializable_hash.slice("id")
+        end
       end
 
       def jwt_payload

@@ -1,6 +1,7 @@
 require "challah"
 require "jwt"
 
+require "challah/jwt/configuration"
 require "challah/jwt/technique"
 require "challah/jwt/tokenizer"
 require "challah/jwt/version"

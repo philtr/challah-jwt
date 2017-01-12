@@ -10,7 +10,7 @@ module Challah
           payload = ::JWT.decode(token, Challah::Jwt.secret_key)
           id = payload.dig(0, jwt_root, "id")
 
-          if Challah::Jwt.configuration.use_api_key
+          if Challah::Jwt.configuration.use_api_key && column_names.include?("api_key")
             api_key = payload.dig(0, jwt_root, "api_key")
             find_by(id: id, api_key: api_key)
           else

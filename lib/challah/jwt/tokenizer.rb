@@ -20,6 +20,10 @@ module Challah
           nil
         end
 
+        def find_by_jwt!(token)
+          find_by_jwt(token) or raise ActiveRecord::RecordNotFound.new("Couldn't find #{self.name} with [jwt=#{token.to_s.truncate(25)}]")
+        end
+
         def jwt_root
           model_name.singular
         end

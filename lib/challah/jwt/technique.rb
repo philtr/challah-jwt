@@ -22,10 +22,6 @@ module Challah
       def user_model
         @user_model ||= Challah.user
       end
-
-      def token_provided?(session)
-        session.request.headers["Authorization"] =~ TOKEN_REGEX
-      end
     end
   end
 end
